@@ -2,18 +2,28 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\User;
+use App\Helper\UserFactory;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
-class UserController extends AbstractController
+class UserController extends BaseController
 {
-    #[Route('/usuarios', name: 'app_user')]
-    public function index(): JsonResponse
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        UserRepository $repository,
+        UserFactory $factory
+    ) {
+        parent::__construct($entityManager, $repository, $factory);
+    }
+
+    /**
+     * @param user $userAtual
+     * @param User $entidadeRequest
+     */
+    public function atualizarEntidadeExistente($userAtual, $entidadeRequest)
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/UserController.php',
-        ]);
+        $userAtual->setEmail($entidadeRequest->getEmail());
+        $userAtual->setPassword($entidadeRequest->getPassword());
     }
 }
