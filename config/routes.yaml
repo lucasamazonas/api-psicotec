@@ -6,7 +6,7 @@ api_login_check:
     path: /api/login_check
 
 usuario_cadastro:
-    path: 'api/usuarios'
+    path: 'api/cadastro/usuarios'
     controller: App\Controller\UserController::criar
     methods:
         - POST

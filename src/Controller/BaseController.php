@@ -10,19 +10,27 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class BaseController extends AbstractController implements BaseControllerInterface
 {
     public function __construct(
         protected EntityManagerInterface $entityManager,
         protected ObjectRepository $repository,
-        protected EntidadeFactoryInterface $factory
+        protected EntidadeFactoryInterface $factory,
+        protected ValidatorInterface $validator
     ) {}
 
     public function criar(Request $request): JsonResponse
     {
         $dadosRequest = $request->getContent();
         $entidade = $this->factory->criarEntidade($dadosRequest);
+
+        $errors = $this->validator->validate($entidade);
+
+        if (count($errors) > 0) {
+            return $this->json($errors, Response::HTTP_BAD_REQUEST);
+        }
 
         $this->entityManager->persist($entidade);
         $this->entityManager->flush();

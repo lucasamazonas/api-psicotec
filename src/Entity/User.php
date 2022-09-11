@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`users`')]
@@ -16,8 +17,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 100)]
+    #[Assert\NotNull]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 5)]
+    private string $name;
+
+    #[ORM\ManyToOne]
+    private Perfil $perfil;
+
     #[ORM\Column(length: 180, unique: true)]
-    private ?string $email = null;
+    #[Assert\Email(
+        message: 'The email {{ value }} is not a valid email.',
+    )]
+    private string $email;
 
     #[ORM\Column]
     private array $roles = [];
@@ -30,9 +43,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
     public function getEmail(): ?string
     {
         return $this->email;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Perfil
+     */
+    public function getPerfil(): Perfil
+    {
+        return $this->perfil;
+    }
+
+    /**
+     * @param Perfil $perfil
+     */
+    public function setPerfil(Perfil $perfil): void
+    {
+        $this->perfil = $perfil;
     }
 
     public function setEmail(string $email): self
