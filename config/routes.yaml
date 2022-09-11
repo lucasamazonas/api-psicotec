@@ -4,3 +4,29 @@ controllers:
     prefix: api
 api_login_check:
     path: /api/login_check
+
+usuario_cadastro:
+    path: 'api/cadastro/usuarios'
+    controller: App\Controller\UserController::criar
+    methods:
+        - POST
+usuario_lista_todos:
+    path: 'api/usuarios'
+    controller: App\Controller\UserController::buscarTudo
+    methods:
+        - GET
+usuario_lista_um:
+    path: 'api/usuarios/{id}'
+    controller: App\Controller\UserController::buscarUm
+    methods:
+        - GET
+usuario_deletar:
+    path: 'api/usuarios/{id}'
+    controller: App\Controller\UserController::deletar
+    methods:
+        - DELETE
+usuario_lista_atualizar:
+    path: 'api/usuarios/{id}'
+    controller: App\Controller\UserController::atualizar
+    methods:
+        - PUT
